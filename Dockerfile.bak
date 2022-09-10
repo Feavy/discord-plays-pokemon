@@ -1,0 +1,23 @@
+FROM openjdk:19-bullseye
+
+COPY build/discord-plays-pokemon-1.0-SNAPSHOT-runner.jar /app/pokemon.jar
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    mgba-sdl \
+    imagemagick
+#    xserver-xorg-video-dummy \
+#    x11-xserver-utils
+
+COPY data/xorg.conf /etc/X11/xorg.conf
+COPY data/pokemon_red.gb /app/pokemon.gb
+
+CMD ["java", "-jar", "pokemon.jar"]
+
+#export DISPLAY=:1
+#Xvfb :1 -screen 0 1024x768x16 &
+#sleep 1
+#/usr/games/mgba pokemon.gb &
+#import -display :1 -window root image.png
