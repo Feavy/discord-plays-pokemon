@@ -2,11 +2,11 @@ package fr.feavy.discordplayspokemon.service.vba.loops;
 
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 
-public class SaveGameLoop implements Runnable {
+public class GameSavingLoop implements Runnable {
     private static final long ONE_MINUTE = 1000 * 60; // delay
     private final Emulator emulator;
 
-    public SaveGameLoop(Emulator emulator) {
+    public GameSavingLoop(Emulator emulator) {
         this.emulator = emulator;
     }
 
