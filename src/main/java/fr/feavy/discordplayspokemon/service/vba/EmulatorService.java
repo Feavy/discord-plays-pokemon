@@ -37,10 +37,6 @@ public class EmulatorService {
         Thread.sleep(3000);
         emulator.loadState();
         startLoops();
-        Runtime.getRuntime().addShutdownHook(new Thread(emulator::saveState));
-    }
-
-    public void stop(@Observes ShutdownEvent ev) {
     }
 
     public void startLoops() {

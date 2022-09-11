@@ -3,7 +3,7 @@ package fr.feavy.discordplayspokemon.service.vba.loops;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 
 public class SaveGameLoop implements Runnable {
-    private static final long TEN_MINUTES = 1000 * 60 * 10; // 10 minutes
+    private static final long ONE_MINUTE = 1000 * 60; // delay
     private final Emulator emulator;
 
     public SaveGameLoop(Emulator emulator) {
@@ -14,7 +14,7 @@ public class SaveGameLoop implements Runnable {
     public void run() {
         while (true) {
             try {
-                Thread.sleep(TEN_MINUTES);
+                Thread.sleep(ONE_MINUTE);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
