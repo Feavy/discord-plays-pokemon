@@ -33,16 +33,14 @@ public class EmulatorService {
     }
 
     public void startup(@Observes StartupEvent e) throws InterruptedException {
-        System.out.println("[EmulatorService] Starting.");
         emulator.start();
         Thread.sleep(3000);
         emulator.loadState();
         startLoops();
+        Runtime.getRuntime().addShutdownHook(new Thread(emulator::saveState));
     }
 
     public void stop(@Observes ShutdownEvent ev) {
-        System.out.println("[EmulatorService] Stopping.");
-        emulator.saveState();
     }
 
     public void startLoops() {
