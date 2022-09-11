@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-plays-pokemon
+  namespace: feavy
+  labels:
+    k8s-app: discord-plays-pokemon
+spec:
+  selector:
+    matchLabels:
+      k8s-app: discord-plays-pokemon
+  revisionHistoryLimit: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: discord-plays-pokemon
+        name: discord-plays-pokemon
+    spec:
+      containers:
+        - name: discord-plays-pokemon
+          image: ${DOCKER_IMAGE}
+          ports:
+            - name: http
+              containerPort: 8080
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        kubernetes.io/hostname: 'oracle-marseille'
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: discord-plays-pokemon
+  namespace: feavy
+spec:
+  selector:
+    k8s-app: discord-plays-pokemon
+  ports:
+    - protocol: TCP
+      port: 8080
+      name: web
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: tpkmnnor-tls
+  namespace: traefik
+data:
+  tls.crt: ${TLS_CERT}
+  tls.key: ${TLS_KEY}
+# kubectl create secret generic feavy-tls --from-file=tls.crt=/feavy.cert --from-file=tls.key=/feavy.key
+# kubectl get secret feavy-tls -o yaml
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: discord-plays-pokemon-route
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`tpkmnnor.com`)
+      services:
+        - name: discord-plays-pokemon
+          namespace: feavy
+          port: 8080
+  tls:
+    secretName: tpkmnnor-tls

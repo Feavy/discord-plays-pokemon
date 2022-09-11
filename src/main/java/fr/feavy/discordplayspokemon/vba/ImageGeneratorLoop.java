@@ -58,7 +58,7 @@ public class ImageGeneratorLoop implements Runnable {
     }
 
     private void generateImage() {
-        System.out.println("generateImage");
+        long start = System.currentTimeMillis();
         BufferedImage screen = takeScreenshot();
         BufferedImage image = new BufferedImage(470, 289+49, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = (Graphics2D) image.getGraphics();
@@ -89,6 +89,7 @@ public class ImageGeneratorLoop implements Runnable {
         try {
             ImageIO.write(image, "png", os);
             this.image.set(os.toByteArray());
+            System.out.println("generated image in "+(System.currentTimeMillis()-start)+"ms");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
