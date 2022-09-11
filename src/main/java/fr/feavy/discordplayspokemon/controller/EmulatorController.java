@@ -11,7 +11,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("{path : view.*}")
+@Path("{path : (?i)view.*}")
 public class EmulatorController {
     private final EmulatorService emulatorService;
 
@@ -27,7 +27,7 @@ public class EmulatorController {
     @Cache(maxAge = 0, noCache = true, noStore = true)
     public Uni<Response> getScreen(@PathParam("path") String path) {
         return Uni.createFrom().item(() -> {
-            String path2 = path.split("/")[0];
+            String path2 = path.split("/")[0].toLowerCase();
 
             List<String> userAgent = httpHeaders.getRequestHeader("User-Agent");
 
