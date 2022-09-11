@@ -2,9 +2,11 @@ package fr.feavy.discordplayspokemon.service.vba.loops;
 
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 import fr.feavy.discordplayspokemon.vba.key.Key;
+import org.checkerframework.checker.units.qual.A;
 
 import java.awt.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Send key input every 3ms
@@ -13,7 +15,7 @@ public class KeyboardLoop implements Runnable {
     private final ConcurrentLinkedQueue<Key> keyQueue = new ConcurrentLinkedQueue<>();
     private final Emulator emulator;
     private final ImageGeneratorLoop screenshotLoop;
-    private int keyQueueCount = 0;
+    private final AtomicInteger keyQueueCount = new AtomicInteger();
 
     private long counterStart = System.currentTimeMillis();
 
@@ -24,7 +26,7 @@ public class KeyboardLoop implements Runnable {
 
     public void queueKey(Key key) {
         keyQueue.add(key);
-        keyQueueCount++;
+        keyQueueCount.incrementAndGet();
     }
 
     @Override
@@ -37,8 +39,7 @@ public class KeyboardLoop implements Runnable {
             }
             if(System.currentTimeMillis() - counterStart >= 1000){
                 counterStart = System.currentTimeMillis();
-                screenshotLoop.setPlayerCountEstimation(keyQueueCount);
-                keyQueueCount = 0;
+                screenshotLoop.setPlayerCountEstimation(keyQueueCount.getAndSet(0));
             }
         }
     }
