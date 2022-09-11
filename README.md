@@ -22,12 +22,11 @@ In reality when you send a gif, Discord sends its URL on tenor.com under the hoo
 
 So when you send `s/e/pkmn` it replaces the first
 
-One thread is responsible of pressing the queued keys (every 3ms).
+### Threads
 
-One thread takes screenshots of the game (every 100ms).
-
-And one thread saves the game (very minute).
-
+- **GameInteractionLoop :** Presses a key every 3ms.
+- **GameRecordingLoop :** Takes screenshots of the game every 100ms.
+- **GameSavingLoop :** Makes a save state every minute.
 
 
 ### Technologies
@@ -46,13 +45,13 @@ Pokémon Red
 
 ### Can I reuse your code?
 
-No problem. MIT :)
+No problem, it is licensed with MIT.
 
 ## Known issues
 
 ### Mobile
 
-
+The `s/<before>/<after>` method seems not to work on many smartphones.
 
 ### Image caching
 
