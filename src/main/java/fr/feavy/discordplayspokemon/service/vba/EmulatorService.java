@@ -5,6 +5,7 @@ import fr.feavy.discordplayspokemon.service.vba.loops.KeyboardLoop;
 import fr.feavy.discordplayspokemon.service.vba.loops.SaveGameLoop;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 import fr.feavy.discordplayspokemon.vba.key.Key;
+import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.context.ManagedExecutor;
 
@@ -32,10 +33,16 @@ public class EmulatorService {
     }
 
     public void startup(@Observes StartupEvent e) throws InterruptedException {
+        System.out.println("[EmulatorService] Starting.");
         emulator.start();
         Thread.sleep(3000);
         emulator.loadState();
         startLoops();
+    }
+
+    public void stop(@Observes ShutdownEvent ev) {
+        System.out.println("[EmulatorService] Stopping.");
+        emulator.saveState();
     }
 
     public void startLoops() {

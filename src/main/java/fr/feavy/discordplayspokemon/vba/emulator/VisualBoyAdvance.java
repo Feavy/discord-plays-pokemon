@@ -28,7 +28,6 @@ public class VisualBoyAdvance implements Emulator {
     private final Robot robot = new Robot();
 
     public VisualBoyAdvance() throws AWTException {
-        Runtime.getRuntime().addShutdownHook(new Thread(this::saveState));
     }
 
     @Override
