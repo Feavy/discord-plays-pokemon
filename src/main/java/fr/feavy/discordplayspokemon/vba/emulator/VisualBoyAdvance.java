@@ -65,6 +65,7 @@ public class VisualBoyAdvance implements Emulator {
     @Override
     public void saveState() {
         try {
+            System.out.println("[VisualBoyAdvance] Saving state...");
             robot.keyPress(KeyEvent.VK_SHIFT);
             Thread.sleep(500);
             robot.keyPress(KeyEvent.VK_F1);
