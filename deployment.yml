@@ -22,7 +22,14 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          volumeMounts:
+            - mountPath: /root/.vba
+              name: vba-data
           imagePullPolicy: Always
+      volumes:
+        - name: vba-data
+          hostPath:
+            path: /discord-plays-pokemon/data
       imagePullSecrets:
         - name: regcred
       nodeSelector:
@@ -31,7 +38,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: discord-plays-pokemon
+  name: discord-plays-pokemon-service
   namespace: feavy
 spec:
   selector:
@@ -39,34 +46,6 @@ spec:
   ports:
     - protocol: TCP
       port: 8080
+      nodePort: 31000
       name: web
----
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: tpkmnnor-tls
-  namespace: traefik
-data:
-  tls.crt: ${TLS_CERT}
-  tls.key: ${TLS_KEY}
-# kubectl create secret generic feavy-tls --from-file=tls.crt=/feavy.cert --from-file=tls.key=/feavy.key
-# kubectl get secret feavy-tls -o yaml
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: discord-plays-pokemon-route
-  namespace: traefik
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`tpkmnnor.com`)
-      services:
-        - name: discord-plays-pokemon
-          namespace: feavy
-          port: 8080
-  tls:
-    secretName: tpkmnnor-tls
+  type: NodePort
