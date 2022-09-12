@@ -58,7 +58,7 @@ public class GameRecordingLoop implements Runnable {
 
         BufferedImage screen = emulator.screenshot();
 
-        BufferedImage image = new BufferedImage(470, 289+49, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(470, 288+49, BufferedImage.TYPE_INT_RGB);
 
         Graphics2D graphics = (Graphics2D) image.getGraphics();
         graphics.setColor(Color.WHITE);
@@ -71,7 +71,7 @@ public class GameRecordingLoop implements Runnable {
 
         graphics.drawImage(screen, 0, 0, null);
         graphics.drawImage(side, 320, 0, null);
-        graphics.drawImage(footer, 0, 289, null);
+        graphics.drawImage(footer, 0, 288, null);
 
         int count = playerCountEstimation.get();
         if(count == 0) count = 1;
