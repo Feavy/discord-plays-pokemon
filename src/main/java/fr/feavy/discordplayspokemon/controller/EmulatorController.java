@@ -9,6 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.List;
 
 @Path("{path : (?i)view.*}")
@@ -29,14 +30,24 @@ public class EmulatorController {
         return Uni.createFrom().item(() -> {
             String path2 = path.split("/")[0].toLowerCase();
 
-            List<String> userAgent = httpHeaders.getRequestHeader("User-Agent");
+            List<String> accept = httpHeaders.getRequestHeader("Accept");
+            boolean isUser = accept != null && accept.size() > 0;
 
-            if (path2.length() > 4 && userAgent.size() > 0 && userAgent.get(0).contains("Discordbot")) {
-                char keyCode = path2.charAt(4);
-                Key key = Key.ofLabel(keyCode);
-                try {
-                    emulatorService.queueKey(key);
-                } catch (IllegalArgumentException ignored) {
+            if(isUser) {
+                return Response.seeOther(URI.create("https://github.com/Feavy/discord-plays-pokemon")).build();
+            }
+
+            List<String> userAgent = httpHeaders.getRequestHeader("User-Agent");
+            boolean isDiscordbot = userAgent != null && userAgent.size() > 0 && userAgent.get(0).contains("Discordbot");
+
+            if(isDiscordbot) {
+                if (path2.length() > 4) {
+                    char keyCode = path2.charAt(4);
+                    Key key = Key.ofLabel(keyCode);
+                    try {
+                        emulatorService.queueKey(key);
+                    } catch (IllegalArgumentException ignored) {
+                    }
                 }
             }
 
