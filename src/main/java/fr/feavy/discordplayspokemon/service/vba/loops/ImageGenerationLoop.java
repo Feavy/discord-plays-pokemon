@@ -2,6 +2,7 @@ package fr.feavy.discordplayspokemon.service.vba.loops;
 
 import fr.feavy.discordplayspokemon.storage.Storage;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
+import org.eclipse.microprofile.context.ManagedExecutor;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.imageio.ImageIO;
@@ -19,17 +20,19 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @ApplicationScoped
 public class ImageGenerationLoop implements Runnable {
+    private final ManagedExecutor executor;
+    private final Emulator emulator;
+    private final Storage storage;
     private final AtomicBoolean dirty = new AtomicBoolean(true);
 
     private final BufferedImage side;
     private final BufferedImage footer;
     private final AtomicReference<byte[]> image = new AtomicReference<>();
-    private final Emulator emulator;
     private final Font font;
     private final AtomicInteger playerCountEstimation = new AtomicInteger(0);
-    private final Storage storage;
 
-    public ImageGenerationLoop(Emulator emulator, Storage storage) throws IOException, FontFormatException {
+    public ImageGenerationLoop(ManagedExecutor executor, Emulator emulator, Storage storage) throws IOException, FontFormatException {
+        this.executor = executor;
         this.emulator = emulator;
         this.storage = storage;
         this.side = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/side.png")));
@@ -48,7 +51,7 @@ public class ImageGenerationLoop implements Runnable {
                 }
                 BufferedImage screen = emulator.screenshot();
                 updateEmbed(screen);
-                saveImage(screen);
+                executor.runAsync(() -> saveImage(screen));
             }else{
                 try {
                     Thread.sleep(100);
