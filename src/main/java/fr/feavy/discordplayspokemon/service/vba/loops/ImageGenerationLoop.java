@@ -2,6 +2,7 @@ package fr.feavy.discordplayspokemon.service.vba.loops;
 
 import fr.feavy.discordplayspokemon.storage.Storage;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.context.ManagedExecutor;
 
@@ -32,12 +33,13 @@ public class ImageGenerationLoop implements Runnable {
 
     private final AtomicReference<byte[]> image = new AtomicReference<>();
     private final AtomicBoolean isDirty = new AtomicBoolean(true);
-    private final AtomicInteger playerCountEstimation = new AtomicInteger(0);
+    private final AtomicInteger playerCountEstimation;
 
     private final Dimension screenSize;
     private final Dimension embedSize;
 
     public ImageGenerationLoop(@ConfigProperty(name = "image-generation.interval") long interval,
+                               MeterRegistry registry,
                                ManagedExecutor executor,
                                Emulator emulator,
                                Storage storage) throws IOException, FontFormatException {
@@ -51,6 +53,8 @@ public class ImageGenerationLoop implements Runnable {
 
         this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.embedSize = new Dimension(aside.getWidth() + screenSize.width, screenSize.height + footer.getHeight());
+
+        this.playerCountEstimation = registry.gauge("player_count", new AtomicInteger(0));
     }
 
     @Override

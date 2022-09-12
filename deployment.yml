@@ -23,6 +23,10 @@ spec:
       labels:
         k8s-app: discord-plays-pokemon
         name: discord-plays-pokemon
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/q/metrics"
     spec:
       containers:
         - name: discord-plays-pokemon

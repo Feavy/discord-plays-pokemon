@@ -5,6 +5,7 @@ import fr.feavy.discordplayspokemon.service.vba.loops.KeyboardInteractionLoop;
 import fr.feavy.discordplayspokemon.service.vba.loops.StateSavingLoop;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 import fr.feavy.discordplayspokemon.vba.key.Key;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.context.ManagedExecutor;
 
@@ -20,7 +21,10 @@ public class EmulatorService {
 
     private final StateSavingLoop stateSavingLoop;
 
+    private final MeterRegistry registry;
+
     public EmulatorService(ManagedExecutor executor, Emulator emulator,
+                           MeterRegistry registry,
                            ImageGenerationLoop imageGenerationLoop,
                            KeyboardInteractionLoop keyboardInteractionLoop,
                            StateSavingLoop stateSavingLoop) {
@@ -29,6 +33,7 @@ public class EmulatorService {
         this.imageGenerationLoop = imageGenerationLoop;
         this.keyboardInteractionLoop = keyboardInteractionLoop;
         this.stateSavingLoop = stateSavingLoop;
+        this.registry = registry;
     }
 
     public void startup(@Observes StartupEvent e) throws InterruptedException {
@@ -46,6 +51,7 @@ public class EmulatorService {
 
     public void queueKey(Key key) {
         keyboardInteractionLoop.queueKey(key);
+        registry.counter("key.pressed", "key", key.name()).increment();
     }
 
     public byte[] getImage() {

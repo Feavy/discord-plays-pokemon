@@ -21,7 +21,9 @@ public class KeyboardInteractionLoop implements Runnable {
     private long counterStart = System.currentTimeMillis();
     private volatile long lastStartKeyPressTime = 0;
 
-    public KeyboardInteractionLoop(@ConfigProperty(name = "key.start.cooldown") long startKeyCooldown, Emulator emulator, ImageGenerationLoop screenshotLoop) {
+    public KeyboardInteractionLoop(@ConfigProperty(name = "key.start.cooldown") long startKeyCooldown,
+                                   Emulator emulator,
+                                   ImageGenerationLoop screenshotLoop) {
         this.startKeyCooldown = startKeyCooldown;
         this.emulator = emulator;
         this.screenshotLoop = screenshotLoop;
