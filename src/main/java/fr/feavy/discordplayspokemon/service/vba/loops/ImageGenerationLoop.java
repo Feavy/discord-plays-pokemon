@@ -26,7 +26,6 @@ public class ImageGenerationLoop implements Runnable {
     private final AtomicReference<byte[]> image = new AtomicReference<>();
     private final Emulator emulator;
     private final Font font;
-
     private final AtomicInteger playerCountEstimation = new AtomicInteger(0);
     private final Storage storage;
 
@@ -47,8 +46,9 @@ public class ImageGenerationLoop implements Runnable {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                byte[] imageData = generateImage();
-                saveImage(imageData);
+                BufferedImage screen = emulator.screenshot();
+                updateEmbed(screen);
+                saveImage(screen);
             }else{
                 try {
                     Thread.sleep(100);
@@ -59,9 +59,7 @@ public class ImageGenerationLoop implements Runnable {
         }
     }
 
-    private byte[] generateImage() {
-        BufferedImage screen = emulator.screenshot();
-
+    private void updateEmbed(BufferedImage screen) {
         BufferedImage image = new BufferedImage(470, 288+49, BufferedImage.TYPE_INT_RGB);
 
         Graphics2D graphics = (Graphics2D) image.getGraphics();
@@ -92,14 +90,18 @@ public class ImageGenerationLoop implements Runnable {
             ImageIO.write(image, "png", os);
             byte[] imageData = os.toByteArray();
             this.image.set(imageData);
-            return imageData;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void saveImage(byte[] imageData) {
-        storage.save("screenshot-"+System.currentTimeMillis()+".png", imageData);
+    private void saveImage(BufferedImage image) {
+        var os = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "png", os);
+            byte[] imageData = os.toByteArray();
+            storage.save(System.currentTimeMillis()+".png", imageData);
+        } catch (IOException ignored) { }
     }
 
     public void setDirty() {
