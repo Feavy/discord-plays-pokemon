@@ -41,7 +41,6 @@ public class KeyboardInteractionLoop implements Runnable {
             if (key != null) {
                 emulator.pressKey(key);
                 screenshotLoop.setDirty();
-            } else {
             }
             if(System.currentTimeMillis() - counterStart >= 1000){
                 counterStart = System.currentTimeMillis();
