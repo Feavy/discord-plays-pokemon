@@ -17,6 +17,9 @@ public class KeyboardInteractionLoop implements Runnable {
 
     private long counterStart = System.currentTimeMillis();
 
+    private static final long START_KEY_COOLDOWN = 30000;
+    private volatile long lastStartKeyPressTime = 0;
+
     public KeyboardInteractionLoop(Emulator emulator, ImageGenerationLoop screenshotLoop) {
         this.emulator = emulator;
         this.screenshotLoop = screenshotLoop;
@@ -31,9 +34,14 @@ public class KeyboardInteractionLoop implements Runnable {
     public void run() {
         while (true) {
             Key key = keyQueue.poll();
+            if(key == Key.START) {
+                if(System.currentTimeMillis() - lastStartKeyPressTime < START_KEY_COOLDOWN) continue;
+                lastStartKeyPressTime = System.currentTimeMillis();
+            }
             if (key != null) {
                 emulator.pressKey(key);
                 screenshotLoop.setDirty();
+            } else {
             }
             if(System.currentTimeMillis() - counterStart >= 1000){
                 counterStart = System.currentTimeMillis();
