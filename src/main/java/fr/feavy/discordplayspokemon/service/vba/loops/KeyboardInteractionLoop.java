@@ -3,12 +3,14 @@ package fr.feavy.discordplayspokemon.service.vba.loops;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 import fr.feavy.discordplayspokemon.vba.key.Key;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Send key input every 3ms
  */
+@ApplicationScoped
 public class KeyboardInteractionLoop implements Runnable {
     private final ConcurrentLinkedQueue<Key> keyQueue = new ConcurrentLinkedQueue<>();
     private final Emulator emulator;

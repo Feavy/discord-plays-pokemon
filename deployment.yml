@@ -1,3 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-account-key
+  namespace: feavy
+data:
+  credentials.json: "${GOOGLE_SERVICE_ACCOUNT_KEY}"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,14 +30,25 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/credentials/credentials.json
           volumeMounts:
             - mountPath: /root/.vba
               name: vba-data
+            - mountPath: /etc/credentials
+              name: credentials
           imagePullPolicy: Always
       volumes:
         - name: vba-data
           hostPath:
             path: /discord-plays-pokemon/data
+        - name: credentials
+          secret:
+            secretName: service-account-key
+            items:
+              - key: credentials.json
+                path: credentials.json
       imagePullSecrets:
         - name: regcred
       nodeSelector:

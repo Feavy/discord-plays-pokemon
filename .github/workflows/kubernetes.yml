@@ -51,6 +51,7 @@ jobs:
           PLATFORM: arm64
           TLS_CRT: ${{ secrets.TLS_CRT }}
           TLS_KEY: ${{ secrets.TLS_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
 
       - name: Restart deployment
         run: kubectl rollout restart deployment discord-plays-pokemon --namespace feavy

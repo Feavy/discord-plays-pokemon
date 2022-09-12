@@ -1,7 +1,9 @@
 package fr.feavy.discordplayspokemon.service.vba.loops;
 
+import fr.feavy.discordplayspokemon.storage.Storage;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Generates new image of the game every 100ms
  */
+@ApplicationScoped
 public class ImageGenerationLoop implements Runnable {
     private final AtomicBoolean dirty = new AtomicBoolean(true);
 
@@ -25,9 +28,11 @@ public class ImageGenerationLoop implements Runnable {
     private final Font font;
 
     private final AtomicInteger playerCountEstimation = new AtomicInteger(0);
+    private final Storage storage;
 
-    public ImageGenerationLoop(Emulator emulator) throws IOException, FontFormatException {
+    public ImageGenerationLoop(Emulator emulator, Storage storage) throws IOException, FontFormatException {
         this.emulator = emulator;
+        this.storage = storage;
         this.side = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/side.png")));
         this.footer = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/footer.png")));
         this.font = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(getClass().getResourceAsStream("/LuckiestGuy-Regular.ttf"))).deriveFont(13f);
@@ -42,7 +47,8 @@ public class ImageGenerationLoop implements Runnable {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                generateImage();
+                byte[] imageData = generateImage();
+                saveImage(imageData);
             }else{
                 try {
                     Thread.sleep(100);
@@ -53,9 +59,7 @@ public class ImageGenerationLoop implements Runnable {
         }
     }
 
-    private void generateImage() {
-        long start = System.currentTimeMillis();
-
+    private byte[] generateImage() {
         BufferedImage screen = emulator.screenshot();
 
         BufferedImage image = new BufferedImage(470, 288+49, BufferedImage.TYPE_INT_RGB);
@@ -86,11 +90,16 @@ public class ImageGenerationLoop implements Runnable {
         var os = new ByteArrayOutputStream();
         try {
             ImageIO.write(image, "png", os);
-            this.image.set(os.toByteArray());
-            System.out.println("generated image in "+(System.currentTimeMillis()-start)+"ms");
+            byte[] imageData = os.toByteArray();
+            this.image.set(imageData);
+            return imageData;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void saveImage(byte[] imageData) {
+        storage.save("screenshot-"+System.currentTimeMillis()+".png", imageData);
     }
 
     public void setDirty() {

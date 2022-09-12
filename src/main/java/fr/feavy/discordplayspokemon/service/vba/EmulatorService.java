@@ -10,25 +10,25 @@ import org.eclipse.microprofile.context.ManagedExecutor;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import java.awt.*;
-import java.io.IOException;
 
 @ApplicationScoped
 public class EmulatorService {
     private final ManagedExecutor executor;
+    private final Emulator emulator;
     private final ImageGenerationLoop imageGenerationLoop;
     private final KeyboardInteractionLoop keyboardInteractionLoop;
 
-    private final Emulator emulator;
     private final StateSavingLoop stateSavingLoop;
 
-    public EmulatorService(ManagedExecutor executor, Emulator emulator) throws IOException, FontFormatException {
+    public EmulatorService(ManagedExecutor executor, Emulator emulator,
+                           ImageGenerationLoop imageGenerationLoop,
+                           KeyboardInteractionLoop keyboardInteractionLoop,
+                           StateSavingLoop stateSavingLoop) {
         this.executor = executor;
         this.emulator = emulator;
-
-        this.imageGenerationLoop = new ImageGenerationLoop(emulator);
-        this.keyboardInteractionLoop = new KeyboardInteractionLoop(emulator, imageGenerationLoop);
-        this.stateSavingLoop = new StateSavingLoop(emulator);
+        this.imageGenerationLoop = imageGenerationLoop;
+        this.keyboardInteractionLoop = keyboardInteractionLoop;
+        this.stateSavingLoop = stateSavingLoop;
     }
 
     public void startup(@Observes StartupEvent e) throws InterruptedException {
