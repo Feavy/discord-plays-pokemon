@@ -53,39 +53,27 @@ public class VisualBoyAdvance implements Emulator {
     public void pressKey(Key key) {
         int keyCode = KEY_MAP.getKeyCode(key);
         robot.keyPress(keyCode);
-        try {
-            Thread.sleep(3);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        robot.delay(3);
         robot.keyRelease(keyCode);
     }
 
     @Override
     public void saveState() {
-        try {
-            System.out.println("[VisualBoyAdvance] Saving state...");
-            robot.keyPress(KeyEvent.VK_SHIFT);
-            Thread.sleep(500);
-            robot.keyPress(KeyEvent.VK_F1);
-            Thread.sleep(1000);
-            robot.keyRelease(KeyEvent.VK_F1);
-            Thread.sleep(500);
-            robot.keyRelease(KeyEvent.VK_SHIFT);
-            System.out.println("[VisualBoyAdvance] Saved state.");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println("[VisualBoyAdvance] Saving state...");
+        robot.keyPress(KeyEvent.VK_SHIFT);
+        robot.delay(500);
+        robot.keyPress(KeyEvent.VK_F1);
+        robot.delay(1000);
+        robot.keyRelease(KeyEvent.VK_F1);
+        robot.delay(500);
+        robot.keyRelease(KeyEvent.VK_SHIFT);
+        System.out.println("[VisualBoyAdvance] Saved state.");
     }
 
     @Override
     public void loadState() {
         robot.keyPress(KeyEvent.VK_F1);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        robot.delay(100);
         robot.keyRelease(KeyEvent.VK_F1);
         System.out.println("[VisualBoyAdvance] Loaded state.");
     }
