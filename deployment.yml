@@ -33,6 +33,13 @@ spec:
           env:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /etc/credentials/credentials.json
+            - name: START_KEY_COOLDOWN
+              value: "30000"
+            - name: IMAGE_GENERATION_INTERVAL
+              value: "100"
+            - name: SAVING_INTERVAL
+              value: "60000"
+
           volumeMounts:
             - mountPath: /root/.vba
               name: vba-data

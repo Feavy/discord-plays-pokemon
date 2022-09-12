@@ -4,7 +4,7 @@
 
 ## Controls
 
-- **Join :** Send a gif with built-in Discord browser, then send the message `s/e/pkmn`
+- **Join :** Send a gif with built-in Discord Tenor browser, then send the message `s/e/pkmn`
 - **A :** `s/e/wa`
 - **B :** `s/e/wb`
 - **Up :** `s/e/ww` | `s/e/wz`
@@ -16,14 +16,13 @@
 
 ## How does it work?
 
-The functioning is inspired by [s/e/x Discord hack](https://www.youtube.com/watch?v=km8CR-fdB7o).
+The original idea comes from the [s/e/x Discord hack](https://www.youtube.com/watch?v=km8CR-fdB7o) by [@rebane2001](https://github.com/rebane2001)
 
-Basically Discord has a built-in feature to replace a part of your last message quickly. This is the `s/<before>/<after>` thing. Sending `test` and then `s/test/ok` will replace `test` by `ok` in your last message.
+To sum up Discord has a built-in shortcut to replace a part of your last message. This is the `s/<before>/<after>` thing. Sending `test` and then `s/test/ok` will replace `test` by `ok` in your previous message.
 
-Added to the fact that when you send a gif from Discord, in reality you simply send a message with the gif URL (hidden by Discord) (eg. `https://tenor.com/view/something`),
-it makes possible to execute code by listener to these changes.
+Added to the fact that when you send a gif from Discord, you send a message with the gif URL (hidden by Discord) (eg. `https://tenor.com/view/something`), it makes possible to execute code by listening to URL changes caused by using the replacement shortcut.
 
- I reused this principle to control a VBA emulator through a Java web server.
+I reused this principle to control a GameBoy emulator through a Java web server.
 
 ### Technologies
 
@@ -39,7 +38,7 @@ Java / Quarkus / Visual Boy Advance / Docker / Kubernetes / GitHub actions
 
 Deployment is done through GitHub actions. It builds the project, creates a Docker image and pushes it to the GitHub registry. See `Dockerfile`
 
-Then this image is deployed to my Kubernetes cluster. See `deployment.yml`
+Then this image is deployed in my Kubernetes cluster. See `deployment.yml`
 
 ## Installation
 
@@ -66,6 +65,10 @@ Pokémon Red
 ### Can I reuse your code?
 
 Of course!
+
+### How is online counting done?
+
+It is an estimation. The bot counts the number of keys added to the queue during the last second.
 
 ## Known issues
 
