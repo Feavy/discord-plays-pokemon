@@ -46,6 +46,32 @@ spec:
   ports:
     - protocol: TCP
       port: 8080
-      nodePort: 31000
       name: web
-  type: NodePort
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: tpkmnnor-tls
+  namespace: traefik
+data:
+  tls.crt: ${TLS_CRT}
+  tls.key: ${TLS_KEY}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: discord-plays-pokemon-route
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`tpkmnnor.com`)
+      services:
+        - name: discord-plays-pokemon-service
+          namespace: feavy
+          port: 8080
+  tls:
+    secretName: tpkmnnor-tls

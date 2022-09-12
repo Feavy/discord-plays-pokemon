@@ -49,6 +49,8 @@ jobs:
           DOCKER_IMAGE: discord-plays-pokemon:latest
           DEPLOYMENT: deployment.yml
           PLATFORM: arm64
+          TLS_CRT: ${{ secrets.TLS_CRT }}
+          TLS_KEY: ${{ secrets.TLS_KEY }}
 
       - name: Restart deployment
         run: kubectl rollout restart deployment discord-plays-pokemon --namespace feavy
