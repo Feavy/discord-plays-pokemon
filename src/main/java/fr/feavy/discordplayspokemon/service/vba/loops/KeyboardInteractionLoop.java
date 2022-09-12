@@ -9,15 +9,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Send key input every 3ms
  */
-public class GameInteractionLoop implements Runnable {
+public class KeyboardInteractionLoop implements Runnable {
     private final ConcurrentLinkedQueue<Key> keyQueue = new ConcurrentLinkedQueue<>();
     private final Emulator emulator;
-    private final GameRecordingLoop screenshotLoop;
+    private final ImageGenerationLoop screenshotLoop;
     private final AtomicInteger keyQueueCount = new AtomicInteger();
 
     private long counterStart = System.currentTimeMillis();
 
-    public GameInteractionLoop(Emulator emulator, GameRecordingLoop screenshotLoop) {
+    public KeyboardInteractionLoop(Emulator emulator, ImageGenerationLoop screenshotLoop) {
         this.emulator = emulator;
         this.screenshotLoop = screenshotLoop;
     }

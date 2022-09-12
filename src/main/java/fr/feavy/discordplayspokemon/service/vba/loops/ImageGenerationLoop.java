@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Generates new image of the game every 100ms
  */
-public class GameRecordingLoop implements Runnable {
+public class ImageGenerationLoop implements Runnable {
     private final AtomicBoolean dirty = new AtomicBoolean(true);
 
     private final BufferedImage side;
@@ -26,7 +26,7 @@ public class GameRecordingLoop implements Runnable {
 
     private final AtomicInteger playerCountEstimation = new AtomicInteger(0);
 
-    public GameRecordingLoop(Emulator emulator) throws IOException, FontFormatException {
+    public ImageGenerationLoop(Emulator emulator) throws IOException, FontFormatException {
         this.emulator = emulator;
         this.side = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/side.png")));
         this.footer = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/footer.png")));
