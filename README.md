@@ -1,4 +1,6 @@
-# Discord Plays Pokémon
+<br/>
+
+![Discord Plays Pokémon](./title.png)
 
 ## Controls
 
@@ -14,13 +16,18 @@
 
 ## How does it work?
 
-Inspired by [s/e/x Discord hack](https://www.youtube.com/watch?v=km8CR-fdB7o).
+The functioning is inspired by [s/e/x Discord hack](https://www.youtube.com/watch?v=km8CR-fdB7o).
 
-Basically Discord has a built-in feature to replace a part of your message quickly. This is the `s/<before>/<after>` thing.
+Basically Discord has a built-in feature to replace a part of your last message quickly. This is the `s/<before>/<after>` thing. Sending `test` and then `s/test/ok` will replace `test` by `ok` in your last message.
 
-In reality when you send a gif, Discord sends its URL on tenor.com under the hood. It is something like `https://tenor.com/view/something`
+Added to the fact that when you send a gif from Discord, in reality you simply send a message with the gif URL (hidden by Discord) (eg. `https://tenor.com/view/something`),
+it makes possible to execute code by listener to these changes.
 
-So when you send `s/e/pkmn` it replaces the first
+ I reused this principle to control a VBA emulator through a Java web server.
+
+### Technologies
+
+Java / Quarkus / Visual Boy Advance / Docker / Kubernetes / GitHub actions
 
 ### Threads
 
@@ -28,14 +35,27 @@ So when you send `s/e/pkmn` it replaces the first
 - **GameRecordingLoop :** Takes screenshots of the game every 100ms.
 - **GameSavingLoop :** Makes a save state every minute.
 
+### Deployment
 
-### Technologies
+Deployment is done through GitHub actions. It builds the project, creates a Docker image and pushes it to the GitHub registry. See `Dockerfile`
 
-Java / Quarkus / Visual Boy Advance / Docker / Kubernetes / GitHub actions
+Then this image is deployed to my Kubernetes cluster. See `deployment.yml`
 
-## Deployment
+## Installation
 
+**Requirements:** Docker, Java 18
 
+```bash
+git clone https://github.com/feavy/discord-plays-pokemon.git
+cd discord-plays-pokemon
+./gradlew build
+docker build . -t pokemon
+docker run --name pokemon -p 8080:8080 -v /path-where-you-want-to-store-game-saves:/root/.vba pokemon
+
+# To stop the container
+docker kill pokemon
+docker rm pokemon
+```
 
 ## FAQ
 
@@ -45,23 +65,23 @@ Pokémon Red
 
 ### Can I reuse your code?
 
-No problem, it is licensed with MIT.
+Of course!
 
 ## Known issues
 
 ### Mobile
 
-The `s/<before>/<after>` method seems not to work on many smartphones.
+The `s/<before>/<after>` thing seems not to work on some smartphones.
 
 ### Image caching
 
-Sometimes the image you see are not the current state of the game.
+Sometimes the image you see can not represent the current state of the game.
 
 Indeed, although my server send pictures with no-cache property set, this option is not propagated through Discord's CDN so the images you see are effectively cached on your computer.
 
-So if somebody already requested you are going to see screenshot of the time when he made the request.
+So if somebody already requested the same URL as you, you are going to see an old screenshot of the time when he made the request.
 
-A simple way to avoid this problem is to add some random alphanumerical characters at the end of the gif URL to make sure nobody already requested that URL.
+A simple way to avoid this problem is to add some random characters at the end of the gif URL to make it unique.
 
 ## Credits
 
