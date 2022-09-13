@@ -61,23 +61,10 @@ public class ImageGenerationLoop implements Runnable {
     public void run() {
         while (true) {
             if (isDirty.compareAndSet(true, false)) {
-                try {
-                    Thread.sleep(sleepDelay);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
                 long before = System.currentTimeMillis();
-                BufferedImage screen = emulator.screenshot();
-                System.out.println("Screenshot took " + (System.currentTimeMillis() - before) + "ms");
-                updateEmbed(screen);
-                System.out.println("+ embed update took " + (System.currentTimeMillis() - before) + "ms");
-                executor.runAsync(() -> saveImage(screen));
-            } else {
-                try {
-                    Thread.sleep(sleepDelay);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                byte[] screen = emulator.record(1000, 20);
+                System.out.println("Recorded in " + (System.currentTimeMillis() - before) + "ms");
+                this.image.set(screen);
             }
         }
     }

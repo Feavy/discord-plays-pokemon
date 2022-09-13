@@ -1,12 +1,14 @@
 package fr.feavy.discordplayspokemon.vba.emulator;
 
+import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import fr.feavy.discordplayspokemon.vba.key.Key;
 import fr.feavy.discordplayspokemon.vba.key.KeyMap;
+import org.eclipse.microprofile.context.ManagedExecutor;
 
 import javax.inject.Singleton;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Singleton
@@ -26,8 +28,11 @@ public class VisualBoyAdvance implements Emulator {
 //    R // S ;
 
     private final Robot robot = new Robot();
+    private final Rectangle screenSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+    private final ManagedExecutor executor;
 
-    public VisualBoyAdvance() throws AWTException {
+    public VisualBoyAdvance(ManagedExecutor executor) throws AWTException {
+        this.executor = executor;
     }
 
     @Override
@@ -45,15 +50,35 @@ public class VisualBoyAdvance implements Emulator {
     }
 
     @Override
-    public BufferedImage screenshot() {
-        return robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+    public byte[] record(long duration, int fps) {
+        long intervalBetweenFrames = 50 * 1000000;
+        long lastFrameTime = 0;
+        long startTime = System.nanoTime();
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
+        animatedGifEncoder.start(bos);
+        animatedGifEncoder.setDelay(50);
+
+        while(startTime + duration * 1000000 > System.nanoTime()) {
+            long currentTime = System.nanoTime();
+            if(currentTime - lastFrameTime >= intervalBetweenFrames) {
+                lastFrameTime = currentTime;
+                animatedGifEncoder.addFrame(robot.createScreenCapture(screenSize));
+            }
+        }
+        animatedGifEncoder.finish();
+        return bos.toByteArray();
     }
+
+
 
     @Override
     public void pressKey(Key key) {
         int keyCode = KEY_MAP.getKeyCode(key);
         robot.keyPress(keyCode);
-        robot.delay(3);
+        robot.delay(100);
         robot.keyRelease(keyCode);
     }
 

@@ -14,6 +14,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-reactive'
     implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
     implementation 'io.quarkus:quarkus-arc'
+    implementation 'junit:junit:4.13.1'
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
     implementation 'com.github.trekawek:coffee-gb:coffee-gb-1.0.0'
@@ -23,6 +24,8 @@ dependencies {
     implementation platform('com.google.cloud:libraries-bom:26.1.1')
 
     implementation 'com.google.cloud:google-cloud-storage'
+    implementation group: 'com.madgag', name: 'animated-gif-lib', version: '1.0'
+
 }
 
 group 'fr.feavy'

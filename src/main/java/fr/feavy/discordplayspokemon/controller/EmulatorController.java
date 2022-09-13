@@ -28,10 +28,11 @@ public class EmulatorController {
     }
 
     @GET
-    @Produces("image/png")
+    @Produces("image/gif")
     @Cache(maxAge = 0, noCache = true, noStore = true)
     public Uni<Response> getScreen(@PathParam("path") String path) {
         return Uni.createFrom().item(() -> {
+            long start = System.currentTimeMillis();
             String path2 = path.split("/")[0].toLowerCase();
 
             List<String> accept = httpHeaders.getRequestHeader("Accept");
@@ -47,15 +48,18 @@ public class EmulatorController {
             if(isDiscordbot) {
                 if (path2.length() > 4) {
                     char keyCode = path2.charAt(4);
-                    Key key = Key.ofLabel(keyCode);
                     try {
+                        Key key = Key.ofLabel(keyCode);
                         emulatorService.queueKey(key);
                     } catch (IllegalArgumentException ignored) {
                     }
                 }
             }
 
-            return Response.ok(emulatorService.getImage(), "image/png").build();
+            byte[] gif = emulatorService.getImage();
+
+            System.out.println("Request took "+(System.currentTimeMillis()-start)+"ms");
+            return Response.ok(gif, "image/gif").build();
         });
     }
 }
