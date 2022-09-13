@@ -66,8 +66,11 @@ public class ImageGenerationLoop implements Runnable {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+                long before = System.currentTimeMillis();
                 BufferedImage screen = emulator.screenshot();
+                System.out.println("Screenshot took " + (System.currentTimeMillis() - before) + "ms");
                 updateEmbed(screen);
+                System.out.println("+ embed update took " + (System.currentTimeMillis() - before) + "ms");
                 executor.runAsync(() -> saveImage(screen));
             } else {
                 try {
