@@ -59,13 +59,12 @@ public class VisualBoyAdvance implements Emulator {
 
     @Override
     public void saveState() {
-        System.out.println("[VisualBoyAdvance] Saving state...");
         robot.keyPress(KeyEvent.VK_SHIFT);
-        robot.delay(500);
+        robot.delay(100);
         robot.keyPress(KeyEvent.VK_F1);
-        robot.delay(1000);
+        robot.delay(200);
         robot.keyRelease(KeyEvent.VK_F1);
-        robot.delay(500);
+        robot.delay(100);
         robot.keyRelease(KeyEvent.VK_SHIFT);
         System.out.println("[VisualBoyAdvance] Saved state.");
     }
