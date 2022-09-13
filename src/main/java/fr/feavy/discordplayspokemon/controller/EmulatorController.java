@@ -49,7 +49,7 @@ public class EmulatorController {
                     char keyCode = path2.charAt(4);
                     Key key = Key.ofLabel(keyCode);
                     try {
-                        emulatorService.queueKey(key);
+                        emulatorService.setNextKey(key);
                     } catch (IllegalArgumentException ignored) {
                     }
                 }

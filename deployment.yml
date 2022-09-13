@@ -39,8 +39,6 @@ spec:
               value: /etc/credentials/credentials.json
             - name: START_KEY_COOLDOWN
               value: "30000"
-            - name: IMAGE_GENERATION_INTERVAL
-              value: "100"
             - name: SAVING_INTERVAL
               value: "30000"
             - name: REDIRECTION_URL

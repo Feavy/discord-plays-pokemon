@@ -1,12 +1,12 @@
 package fr.feavy.discordplayspokemon.vba.emulator;
 
+import fr.feavy.discordplayspokemon.image.Image;
 import fr.feavy.discordplayspokemon.vba.key.Key;
 import fr.feavy.discordplayspokemon.vba.key.KeyMap;
 
 import javax.inject.Singleton;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Singleton
@@ -45,16 +45,21 @@ public class VisualBoyAdvance implements Emulator {
     }
 
     @Override
-    public BufferedImage screenshot() {
-        return robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+    public Image screenshot() {
+        return new Image(robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize())));
     }
 
     @Override
     public void pressKey(Key key) {
         int keyCode = KEY_MAP.getKeyCode(key);
         robot.keyPress(keyCode);
-        robot.delay(3);
+        robot.delay(5);
         robot.keyRelease(keyCode);
+    }
+
+    @Override
+    public void sleep(long ms) {
+        robot.delay((int)ms);
     }
 
     @Override

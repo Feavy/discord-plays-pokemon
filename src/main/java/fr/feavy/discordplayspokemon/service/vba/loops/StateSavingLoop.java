@@ -19,11 +19,7 @@ public class StateSavingLoop implements Runnable {
     @Override
     public void run() {
         while (true) {
-            try {
-                Thread.sleep(interval);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            emulator.sleep(interval);
             emulator.saveState();
         }
     }

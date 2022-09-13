@@ -1,7 +1,7 @@
 package fr.feavy.discordplayspokemon.service.vba;
 
-import fr.feavy.discordplayspokemon.service.vba.loops.ImageGenerationLoop;
-import fr.feavy.discordplayspokemon.service.vba.loops.KeyboardInteractionLoop;
+import fr.feavy.discordplayspokemon.service.discord.ImageMessageService;
+import fr.feavy.discordplayspokemon.service.vba.loops.GameLoop;
 import fr.feavy.discordplayspokemon.service.vba.loops.StateSavingLoop;
 import fr.feavy.discordplayspokemon.vba.emulator.Emulator;
 import fr.feavy.discordplayspokemon.vba.key.Key;
@@ -16,8 +16,8 @@ import javax.enterprise.event.Observes;
 public class EmulatorService {
     private final ManagedExecutor executor;
     private final Emulator emulator;
-    private final ImageGenerationLoop imageGenerationLoop;
-    private final KeyboardInteractionLoop keyboardInteractionLoop;
+    private final ImageMessageService imageService;
+    private final GameLoop gameLoop;
 
     private final StateSavingLoop stateSavingLoop;
 
@@ -25,36 +25,36 @@ public class EmulatorService {
 
     public EmulatorService(ManagedExecutor executor, Emulator emulator,
                            MeterRegistry registry,
-                           ImageGenerationLoop imageGenerationLoop,
-                           KeyboardInteractionLoop keyboardInteractionLoop,
+                           ImageMessageService imageService,
+                           GameLoop gameLoop,
                            StateSavingLoop stateSavingLoop) {
         this.executor = executor;
         this.emulator = emulator;
-        this.imageGenerationLoop = imageGenerationLoop;
-        this.keyboardInteractionLoop = keyboardInteractionLoop;
+        this.imageService = imageService;
+        this.gameLoop = gameLoop;
         this.stateSavingLoop = stateSavingLoop;
         this.registry = registry;
     }
 
-    public void startup(@Observes StartupEvent e) throws InterruptedException {
+    public void startup(@Observes StartupEvent e) {
         emulator.start();
-        Thread.sleep(3000);
+        emulator.sleep(3000);
         emulator.loadState();
         startLoops();
+        imageService.updateImage(emulator.screenshot(), 0);
     }
 
     public void startLoops() {
-        executor.runAsync(this.keyboardInteractionLoop);
-        executor.runAsync(this.imageGenerationLoop);
+        executor.runAsync(this.gameLoop);
         executor.runAsync(this.stateSavingLoop);
     }
 
-    public void queueKey(Key key) {
-        keyboardInteractionLoop.queueKey(key);
+    public void setNextKey(Key key) {
+        gameLoop.setNextKey(key);
         registry.counter("key.pressed", "key", key.name()).increment();
     }
 
     public byte[] getImage() {
-        return imageGenerationLoop.getImage();
+        return imageService.getImage();
     }
 }
