@@ -45,13 +45,14 @@ public class EmulatorController {
             boolean isDiscordbot = userAgent != null && userAgent.size() > 0 && userAgent.get(0).contains("Discordbot");
 
             if(isDiscordbot) {
-                if (path2.length() > 4) {
-                    char keyCode = path2.charAt(4);
-                    Key key = Key.ofLabel(keyCode);
-                    try {
-                        emulatorService.setNextKey(key);
-                    } catch (IllegalArgumentException ignored) {
-                    }
+                char keyCode = path.charAt(path.length()-1);
+                Key key = Key.ofLabel(keyCode);
+                if(key == null && path2.length() > 4) {
+                    keyCode = path2.charAt(4);
+                    key = Key.ofLabel(keyCode);
+                }
+                if(key != null) {
+                    emulatorService.setNextKey(key);
                 }
             }
 

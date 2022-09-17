@@ -32,10 +32,6 @@ public enum Key {
     }
 
     public static Key ofLabel(char label) {
-        Key key = labelToKeyMap.get(label);
-        if(key == null) {
-            throw new IllegalArgumentException("Unknown key: "+label);
-        }
-        return key;
+        return labelToKeyMap.get(label);
     }
 }
