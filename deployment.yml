@@ -98,7 +98,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`tpkmnnor.com`)
+      match: Host(`pkmn.feavy.fr`)
       services:
         - name: discord-plays-pokemon-service
           namespace: feavy
