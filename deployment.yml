@@ -63,7 +63,7 @@ spec:
       imagePullSecrets:
         - name: regcred
       nodeSelector:
-        kubernetes.io/hostname: 'oracle-marseille'
+        kubernetes.io/hostname: 'oracle-paris'
 ---
 kind: Service
 apiVersion: v1
